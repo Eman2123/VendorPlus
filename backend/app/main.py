@@ -7,7 +7,7 @@ for the exact request/response shapes each router must implement.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import vendors, calls, dashboard
+from app.routers import vendors, calls, dashboard,vendors
 
 app = FastAPI(
     title="VendorPulse API",
