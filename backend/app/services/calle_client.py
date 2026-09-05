@@ -20,11 +20,17 @@ MAX_POLL_ATTEMPTS = 18  # ~3 minutes max wait
 
 def _run_calle_command(args: list[str]) -> dict:
     """Run a `calle` CLI command with --json and return the parsed JSON output."""
+    import shutil
+    calle_path = shutil.which("calle") or "calle"
+
     result = subprocess.run(
-        ["calle"] + args + ["--json"],
+        [calle_path] + args + ["--json"],
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=180,
+        shell=True,
     )
     if result.returncode != 0:
         raise RuntimeError(f"calle CLI failed: {result.stderr or result.stdout}")
