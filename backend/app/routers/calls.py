@@ -1,6 +1,7 @@
 """
 POST /call, GET /call-history
 """
+import time
 from typing import List
 from uuid import UUID
 
@@ -20,31 +21,15 @@ from app.services.result_extractor import extract_call_result
 
 router = APIRouter()
 
+MAX_ATTEMPTS = 3
+RETRY_DELAY_SECONDS = 5  # spaced-out retries; kept short for demo purposes
 
-@router.post("/call", response_model=CallTriggerResponse, status_code=202)
-def trigger_call(payload: CallTrigger, db: Session = Depends(get_db)):
-    vendor = db.query(Vendor).filter(Vendor.vendor_id == payload.vendor_id).first()
-    if vendor is None:
-        raise HTTPException(status_code=404, detail="Vendor not found")
 
-    order = db.query(Order).filter(Order.order_id == payload.order_id).first()
-    if order is None:
-        raise HTTPException(status_code=404, detail="Order not found")
-
-    # call_in_progress lock: refuse if a call for this order is already running
-    active_call = (
-        db.query(Call)
-        .filter(Call.order_id == order.order_id, Call.call_in_progress.is_(True))
-        .first()
-    )
-    if active_call is not None:
-        raise HTTPException(status_code=409, detail="A call is already in progress for this order")
-
-    attempt_number = (
-        db.query(Call).filter(Call.order_id == order.order_id).count() + 1
-    )
-
-    # Placeholder row while the call is running (locks this order)
+def _run_single_attempt(db: Session, vendor: Vendor, order: Order, attempt_number: int) -> Call:
+    """
+    Places one real call attempt, extracts the result, saves a Call row,
+    and returns it. Does not manage the call_in_progress lock itself.
+    """
     call_row = Call(
         vendor_id=vendor.vendor_id,
         order_id=order.order_id,
@@ -67,7 +52,7 @@ def trigger_call(payload: CallTrigger, db: Session = Depends(get_db)):
         call_row.call_status = "failed"
         call_row.call_in_progress = False
         db.commit()
-        raise HTTPException(status_code=502, detail=f"CALL-E call failed: {e}")
+        return call_row
 
     call_result = raw_result.get("result", {})
     transcript = call_result.get("transcript") or ""
@@ -97,8 +82,48 @@ def trigger_call(payload: CallTrigger, db: Session = Depends(get_db)):
     call_row.call_in_progress = False
 
     db.commit()
+    return call_row
 
-    return CallTriggerResponse(call_id=call_row.call_id, status="completed")
+
+@router.post("/call", response_model=CallTriggerResponse, status_code=202)
+def trigger_call(payload: CallTrigger, db: Session = Depends(get_db)):
+    vendor = db.query(Vendor).filter(Vendor.vendor_id == payload.vendor_id).first()
+    if vendor is None:
+        raise HTTPException(status_code=404, detail="Vendor not found")
+
+    order = db.query(Order).filter(Order.order_id == payload.order_id).first()
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    # call_in_progress lock: refuse if a call sequence for this order is already running
+    active_call = (
+        db.query(Call)
+        .filter(Call.order_id == order.order_id, Call.call_in_progress.is_(True))
+        .first()
+    )
+    if active_call is not None:
+        raise HTTPException(status_code=409, detail="A call is already in progress for this order")
+
+    starting_attempt = db.query(Call).filter(Call.order_id == order.order_id).count() + 1
+
+    last_call_row = None
+    for i in range(MAX_ATTEMPTS):
+        attempt_number = starting_attempt + i
+        last_call_row = _run_single_attempt(db, vendor, order, attempt_number)
+
+        if last_call_row.call_status == "picked_up":
+            # Success — no need to retry further
+            break
+
+        if i < MAX_ATTEMPTS - 1:
+            time.sleep(RETRY_DELAY_SECONDS)
+
+    # If every attempt in this sequence failed to connect, flag as unreachable
+    if last_call_row is not None and last_call_row.call_status != "picked_up":
+        last_call_row.unreachable_final = True
+        db.commit()
+
+    return CallTriggerResponse(call_id=last_call_row.call_id, status="completed")
 
 
 @router.get("/call-history", response_model=List[CallHistoryItem])
