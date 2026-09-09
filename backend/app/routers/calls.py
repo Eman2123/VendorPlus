@@ -2,6 +2,8 @@
 POST /call, GET /call-history
 """
 import time
+from app.services.alerts import check_and_send_alert
+from app.services.risk_engine import compute_risk_score
 from typing import List
 from uuid import UUID
 
@@ -118,10 +120,40 @@ def trigger_call(payload: CallTrigger, db: Session = Depends(get_db)):
         if i < MAX_ATTEMPTS - 1:
             time.sleep(RETRY_DELAY_SECONDS)
 
-    # If every attempt in this sequence failed to connect, flag as unreachable
+
+       # If every attempt in this sequence failed to connect, flag as unreachable
     if last_call_row is not None and last_call_row.call_status != "picked_up":
         last_call_row.unreachable_final = True
         db.commit()
+
+    # Compute current risk tier and fire an alert if it crosses the threshold
+    if last_call_row is not None:
+        vendor_days_late = None
+        if last_call_row.delivery_estimate_revised:
+            drift = (last_call_row.delivery_estimate_revised - order.deadline).days
+            vendor_days_late = drift if drift > 0 else None
+
+        score_result = compute_risk_score(
+            delivery_status=last_call_row.delivery_status or "unclear",
+            confidence_score=float(last_call_row.confidence_score or 0.0),
+            original_deadline=order.deadline,
+            delivery_estimate_revised=last_call_row.delivery_estimate_revised,
+            vendor_days_late=vendor_days_late,
+            average_days_late_all_vendors=0.0,
+            is_new_or_high_risk=vendor.is_new_or_high_risk,
+            risk_signals=last_call_row.risk_signals or [],
+        )
+
+        alert_sent = check_and_send_alert(
+            vendor_name=vendor.vendor_name,
+            order_id=order.order_id,
+            risk_tier=score_result["risk_tier"],
+            unreachable_final=last_call_row.unreachable_final,
+            delivery_status=last_call_row.delivery_status or "unclear",
+        )
+
+        if alert_sent:
+            print(f"[alerts] Alert sent for order {order.order_id}, tier {score_result['risk_tier']}")
 
     return CallTriggerResponse(call_id=last_call_row.call_id, status="completed")
 
