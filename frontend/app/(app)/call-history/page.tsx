@@ -9,11 +9,11 @@ import {
   Building2, 
   ChevronDown, 
   Phone, 
-  PhoneOff, 
-  CheckCircle2, 
   Clock,
   MessageSquare,
-  TrendingUp
+  TrendingUp,
+  ShieldCheck,
+  AlertCircle
 } from "lucide-react";
 
 export default function CallHistoryPage() {
@@ -63,8 +63,8 @@ export default function CallHistoryPage() {
         .animate-slideInUp { animation: slideInUp 0.4s ease-out forwards; opacity: 0; }
         
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from { opacity: 0; transform: scale(0.98); }
+          to { opacity: 1; transform: scale(1); }
         }
         .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
         `
@@ -72,22 +72,23 @@ export default function CallHistoryPage() {
 
       {/* HEADER */}
       <div>
-        <h2 className="font-serif text-2xl font-bold text-ink dark:text-white">Call History & Insights</h2>
+        <h2 className="font-serif text-2xl font-bold text-ink dark:text-white">Call History & Audit Log</h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Track every autonomous call and its risk assessment.</p>
       </div>
 
       {/* ERROR BANNER */}
       {error && <ErrorBanner message={error} onRetry={loadVendors} />}
 
-      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         
-        {/* LEFT PANEL: Vendor Selection (Desktop) */}
-        <div className="hidden lg:block">
+        {/* LEFT PANEL: Vendor Selection */}
+        <div className="lg:sticky lg:top-24 lg:h-fit">
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-ink-light">
             <div className="border-b border-slate-100 p-4 dark:border-white/5">
               <h3 className="text-sm font-bold text-ink dark:text-white">Select Vendor</h3>
             </div>
-            <div className="max-h-[60vh] space-y-1 overflow-y-auto p-2">
+            {/* Desktop List */}
+            <div className="hidden max-h-[60vh] space-y-1 overflow-y-auto p-2 lg:block">
               {vendors.map((v) => (
                 <button
                   key={v.vendor_id}
@@ -110,29 +111,29 @@ export default function CallHistoryPage() {
                 </button>
               ))}
             </div>
+            
+            {/* Mobile Dropdown */}
+            <div className="relative p-2 lg:hidden">
+              <Building2 size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <select
+                value={selectedId}
+                onChange={(e) => setSelectedId(e.target.value)}
+                disabled={vendors.length === 0}
+                className="w-full appearance-none rounded-lg border border-slate-300 bg-white py-2.5 pl-9 pr-10 text-sm font-medium text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
+              >
+                {vendors.length === 0 && <option>No vendors</option>}
+                {vendors.map((v) => (
+                  <option key={v.vendor_id} value={v.vendor_id}>{v.vendor_name}</option>
+                ))}
+              </select>
+              <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            </div>
           </div>
         </div>
 
         {/* RIGHT PANEL: Timeline & History */}
         <div className="space-y-4">
           
-          {/* Mobile Dropdown */}
-          <div className="relative lg:hidden">
-            <Building2 size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <select
-              value={selectedId}
-              onChange={(e) => setSelectedId(e.target.value)}
-              disabled={vendors.length === 0}
-              className="w-full appearance-none rounded-lg border border-slate-300 bg-white py-2.5 pl-9 pr-10 text-sm font-medium text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
-            >
-              {vendors.length === 0 && <option>No vendors</option>}
-              {vendors.map((v) => (
-                <option key={v.vendor_id} value={v.vendor_id}>{v.vendor_name}</option>
-              ))}
-            </select>
-            <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          </div>
-
           {/* Vendor Info Header Card */}
           {selectedVendor && (
             <div className="animate-fadeIn flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-ink-light">
@@ -154,7 +155,7 @@ export default function CallHistoryPage() {
                   <div key={i} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <div className="size-4 animate-pulse rounded-full bg-slate-200 dark:bg-white/10"></div>
-                      <div className="h-full w-px animate-pulse bg-slate-200 dark:bg-white/10"></div>
+                      <div className="h-full w-0.5 animate-pulse bg-slate-200 dark:bg-white/10"></div>
                     </div>
                     <div className="h-24 w-full animate-pulse rounded-lg bg-slate-200/60 dark:bg-white/5"></div>
                   </div>
@@ -186,9 +187,9 @@ export default function CallHistoryPage() {
                       c.call_status === 'unreachable' ? 'bg-slate-400' : 
                       'bg-accent'
                     }`}>
-                      <span className={`absolute h-full w-full rounded-full opacity-40 animate-ping ${
-                        c.call_status === 'completed' ? 'bg-green-500' : 'bg-accent'
-                      }`}></span>
+                      {c.call_status === 'completed' && (
+                        <span className="absolute h-full w-full rounded-full bg-green-500 opacity-40 animate-ping"></span>
+                      )}
                     </div>
                     
                     {/* Content Card */}
@@ -238,7 +239,7 @@ export default function CallHistoryPage() {
                       {c.recommendation && (
                         <div className="mt-4 border-t border-slate-200 pt-4 dark:border-white/10">
                           <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                            <CheckCircle2 size={12} /> AI Recommendation
+                            <ShieldCheck size={12} /> AI Recommendation
                           </p>
                           <p className="text-sm text-slate-600 dark:text-slate-300">{c.recommendation}</p>
                         </div>
