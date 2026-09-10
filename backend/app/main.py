@@ -1,13 +1,11 @@
 """
-VendorPulse — FastAPI entrypoint (Day 2 skeleton).
-
-Rule-based MVP only — no ML, no microservices. See docs/apicontract.md
-for the exact request/response shapes each router must implement.
+VendorPulse — FastAPI entrypoint.
 """
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import vendors, calls, dashboard,vendors
+from app.routers import vendors, calls, dashboard
 
 app = FastAPI(
     title="VendorPulse API",
@@ -15,10 +13,13 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# Allow the Next.js dev server to call this API during local dev.
+# Comma-separated list in .env, e.g.:
+# ALLOWED_ORIGINS=http://localhost:3000,https://vendorplus.vercel.app
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
