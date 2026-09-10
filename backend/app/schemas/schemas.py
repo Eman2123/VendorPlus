@@ -35,7 +35,13 @@ class VendorListItem(BaseModel):
     last_call_status: Optional[str] = None
     alert_sent: bool = False
 
-
+class VendorUpdate(BaseModel):
+    vendor_name: Optional[str] = None
+    contact_phone: Optional[str] = None
+    language_preference: Optional[str] = None
+    is_new_or_high_risk: Optional[bool] = None
+    deadline: Optional[date] = None
+    
 class CallTrigger(BaseModel):
     vendor_id: UUID
     order_id: str
