@@ -5,6 +5,16 @@ import CallStatusBadge from "@/components/CallStatusBadge";
 import ErrorBanner from "@/components/ErrorBanner";
 import { getVendors, getCallHistory } from "@/lib/api";
 import type { Vendor, CallHistoryItem } from "@/lib/mockData";
+import {
+  Building2, 
+  ChevronDown, 
+  Phone, 
+  PhoneOff, 
+  CheckCircle2, 
+  Clock,
+  MessageSquare,
+  TrendingUp
+} from "lucide-react";
 
 export default function CallHistoryPage() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -39,65 +49,207 @@ export default function CallHistoryPage() {
       .finally(() => setLoading(false));
   }, [selectedId]);
 
+  const selectedVendor = vendors.find(v => v.vendor_id === selectedId);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-end">
-        <select
-          value={selectedId}
-          onChange={(e) => setSelectedId(e.target.value)}
-          disabled={vendors.length === 0}
-          className="rounded-md border border-slate-200 px-3 py-1.5 text-sm dark:border-white/10 dark:bg-ink-light dark:text-slate-100"
-        >
-          {vendors.length === 0 && <option>No vendors</option>}
-          {vendors.map((v) => (
-            <option key={v.vendor_id} value={v.vendor_id}>
-              {v.vendor_name}
-            </option>
-          ))}
-        </select>
+    <div className="space-y-6">
+      {/* Custom CSS for Premium Animations */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(15px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideInUp { animation: slideInUp 0.4s ease-out forwards; opacity: 0; }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+        `
+      }} />
+
+      {/* HEADER */}
+      <div>
+        <h2 className="font-serif text-2xl font-bold text-ink dark:text-white">Call History & Insights</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Track every autonomous call and its risk assessment.</p>
       </div>
 
+      {/* ERROR BANNER */}
       {error && <ErrorBanner message={error} onRetry={loadVendors} />}
 
-      <div className="overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-ink-light">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-slate-200 text-slate-500 dark:border-white/10 dark:text-slate-400">
-              <th className="px-4 py-2">#</th>
-              <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Delivery Status</th>
-              <th className="px-4 py-2">Confidence</th>
-              <th className="px-4 py-2">Recommendation</th>
-            </tr>
-          </thead>
-          <tbody className="text-ink dark:text-slate-300">
+      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+        
+        {/* LEFT PANEL: Vendor Selection (Desktop) */}
+        <div className="hidden lg:block">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-ink-light">
+            <div className="border-b border-slate-100 p-4 dark:border-white/5">
+              <h3 className="text-sm font-bold text-ink dark:text-white">Select Vendor</h3>
+            </div>
+            <div className="max-h-[60vh] space-y-1 overflow-y-auto p-2">
+              {vendors.map((v) => (
+                <button
+                  key={v.vendor_id}
+                  onClick={() => setSelectedId(v.vendor_id)}
+                  className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-all ${
+                    selectedId === v.vendor_id 
+                      ? "bg-accent/10 shadow-sm ring-1 ring-accent/30" 
+                      : "hover:bg-slate-50 dark:hover:bg-white/5"
+                  }`}
+                >
+                  <div className={`grid size-9 shrink-0 place-items-center rounded-lg ${
+                    selectedId === v.vendor_id ? "bg-accent text-white" : "bg-slate-100 text-slate-500 dark:bg-white/5 dark:text-slate-400"
+                  }`}>
+                    <Building2 size={16} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className={`truncate text-sm font-semibold ${selectedId === v.vendor_id ? "text-accent" : "text-ink dark:text-white"}`}>{v.vendor_name}</p>
+                    <p className="truncate text-xs text-slate-400">{v.order_id}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT PANEL: Timeline & History */}
+        <div className="space-y-4">
+          
+          {/* Mobile Dropdown */}
+          <div className="relative lg:hidden">
+            <Building2 size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <select
+              value={selectedId}
+              onChange={(e) => setSelectedId(e.target.value)}
+              disabled={vendors.length === 0}
+              className="w-full appearance-none rounded-lg border border-slate-300 bg-white py-2.5 pl-9 pr-10 text-sm font-medium text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
+            >
+              {vendors.length === 0 && <option>No vendors</option>}
+              {vendors.map((v) => (
+                <option key={v.vendor_id} value={v.vendor_id}>{v.vendor_name}</option>
+              ))}
+            </select>
+            <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          </div>
+
+          {/* Vendor Info Header Card */}
+          {selectedVendor && (
+            <div className="animate-fadeIn flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-ink-light">
+              <div className="grid size-12 place-items-center rounded-xl bg-accent/10 text-accent">
+                <Building2 size={24} />
+              </div>
+              <div>
+                <h3 className="font-serif text-lg font-bold text-ink dark:text-white">{selectedVendor.vendor_name}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Order ID: {selectedVendor.order_id}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Timeline Area */}
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-ink-light">
             {loading ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
-                  Loading…
-                </td>
-              </tr>
+              <div className="space-y-6">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="size-4 animate-pulse rounded-full bg-slate-200 dark:bg-white/10"></div>
+                      <div className="h-full w-px animate-pulse bg-slate-200 dark:bg-white/10"></div>
+                    </div>
+                    <div className="h-24 w-full animate-pulse rounded-lg bg-slate-200/60 dark:bg-white/5"></div>
+                  </div>
+                ))}
+              </div>
             ) : history.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
-                  No calls yet for this vendor.
-                </td>
-              </tr>
+              <div className="animate-fadeIn flex flex-col items-center justify-center gap-3 py-16 text-center text-slate-400 dark:text-slate-500">
+                <div className="grid size-16 place-items-center rounded-2xl bg-slate-100 dark:bg-white/5">
+                  <Phone size={28} className="rotate-[135deg] text-slate-400 dark:text-slate-500" />
+                </div>
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">No calls yet</p>
+                <p className="text-xs">Trigger a call from the Vendors page to see it here.</p>
+              </div>
             ) : (
-              history.map((c) => (
-                <tr key={c.call_id} className="border-b border-slate-100 last:border-0 dark:border-white/5">
-                  <td className="px-4 py-2">{c.attempt_number}</td>
-                  <td className="px-4 py-2">
-                    <CallStatusBadge status={c.call_status} />
-                  </td>
-                  <td className="px-4 py-2">{c.delivery_status ?? "—"}</td>
-                  <td className="px-4 py-2">{c.confidence_score ?? "—"}</td>
-                  <td className="px-4 py-2">{c.recommendation ?? "—"}</td>
-                </tr>
-              ))
+              <div className="relative space-y-8">
+                {/* Vertical Line */}
+                <div className="absolute left-[7px] top-2 h-full w-0.5 bg-slate-200 dark:bg-white/10"></div>
+                
+                {/* Timeline Items */}
+                {history.map((c, idx) => (
+                  <div 
+                    key={c.call_id} 
+                    className="animate-slideInUp relative flex gap-6"
+                    style={{ animationDelay: `${idx * 100}ms` }}
+                  >
+                    {/* Timeline Node */}
+                    <div className={`relative z-10 mt-1 grid size-4 shrink-0 place-items-center rounded-full ring-4 ring-white dark:ring-ink-light ${
+                      c.call_status === 'completed' ? 'bg-green-500' : 
+                      c.call_status === 'unreachable' ? 'bg-slate-400' : 
+                      'bg-accent'
+                    }`}>
+                      <span className={`absolute h-full w-full rounded-full opacity-40 animate-ping ${
+                        c.call_status === 'completed' ? 'bg-green-500' : 'bg-accent'
+                      }`}></span>
+                    </div>
+                    
+                    {/* Content Card */}
+                    <div className="group flex-1 rounded-xl border border-slate-100 bg-slate-50/50 p-5 transition-all duration-300 hover:border-slate-200 hover:shadow-md dark:border-white/5 dark:bg-white/5 dark:hover:border-white/10">
+                      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                            <Clock size={12} /> Attempt #{c.attempt_number}
+                          </span>
+                          <CallStatusBadge status={c.call_status} />
+                        </div>
+                      </div>
+                      
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        {/* Delivery Status */}
+                        <div className="space-y-1">
+                          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                            <MessageSquare size={12} /> Delivery Status
+                          </p>
+                          <p className="text-sm font-medium text-ink dark:text-white">
+                            {c.delivery_status || "Not Recorded"}
+                          </p>
+                        </div>
+
+                        {/* Confidence Score */}
+                        <div className="space-y-1">
+                          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                            <TrendingUp size={12} /> Confidence
+                          </p>
+                          {c.confidence_score !== null && c.confidence_score !== undefined ? (
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+                                <div 
+                                  className="h-full rounded-full bg-gradient-to-r from-accent to-violet" 
+                                  style={{ width: `${c.confidence_score}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-xs font-bold text-ink dark:text-white">{c.confidence_score}%</span>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-slate-400">—</p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Recommendation */}
+                      {c.recommendation && (
+                        <div className="mt-4 border-t border-slate-200 pt-4 dark:border-white/10">
+                          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                            <CheckCircle2 size={12} /> AI Recommendation
+                          </p>
+                          <p className="text-sm text-slate-600 dark:text-slate-300">{c.recommendation}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     </div>
   );
