@@ -6,19 +6,28 @@ export const metadata: Metadata = {
   description: "Autonomous voice check-ins for vendor risk detection",
 };
 
+// Applies the saved theme before paint, so there's no light-flash on load.
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem("theme");
+    var isDark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (isDark) document.documentElement.classList.add("dark");
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <header className="border-b bg-white px-6 py-4">
-          <h1 className="text-xl font-semibold">VendorPulse</h1>
-        </header>
-        <main className="p-6">{children}</main>
-      </body>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
