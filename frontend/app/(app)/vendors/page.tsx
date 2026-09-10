@@ -317,8 +317,8 @@ export default function VendorListPage() {
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Phone Number</label>
                 <input
                   type="tel"
-                  value={editingVendor.phone_number || ""}
-                  onChange={(e) => setEditingVendor({ ...editingVendor, phone_number: e.target.value })}
+                  value={editingVendor.contact_phone || ""}
+                  onChange={(e) => setEditingVendor({ ...editingVendor, contact_phone: e.target.value })}
                   className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
                 />
               </div>

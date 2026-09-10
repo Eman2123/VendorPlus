@@ -11,6 +11,7 @@ export type Vendor = {
   risk_score: number;
   last_call_status: "no_answer" | "busy" | "voicemail" | "picked_up" | "not_called" | "unreachable" | "failed" | "in_progress" | null;
   alert_sent: boolean;
+  contact_phone?: string;
 };
 
 export type CallHistoryItem = {
