@@ -47,3 +47,29 @@ export async function createVendor(payload: {
   if (!res.ok) throw new Error("Failed to create vendor");
   return res.json();
 }
+
+// ==========================================
+// ADDED: Update Vendor Function
+// ==========================================
+export async function updateVendor(vendorId: string, updatedData: any) {
+  const res = await fetch(`${API_BASE}/vendors/${vendorId}`, {
+    method: "PUT", // Agar aapke FastAPI me PATCH hai, toh yahan PATCH likh dein
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedData),
+  });
+  if (!res.ok) throw new Error("Failed to update vendor");
+  return res.json();
+}
+
+// ==========================================
+// ADDED: Delete Vendor Function
+// ==========================================
+export async function deleteVendor(vendorId: string) {
+  const res = await fetch(`${API_BASE}/vendors/${vendorId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete vendor");
+  // Sometimes backend returns 204 No Content for DELETE, handle it safely
+  if (res.status === 204) return { success: true };
+  return res.json();
+}

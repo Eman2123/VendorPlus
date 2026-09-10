@@ -76,11 +76,11 @@ export default function Sidebar() {
       <div className="border-t border-white/10 p-3">
         <div className={`flex items-center gap-2.5 rounded-lg p-2 ${open ? "hover:bg-white/5" : "justify-center"}`}>
           <div className="grid size-8 shrink-0 place-items-center rounded-full bg-violet/30 text-sm font-semibold text-white">
-            E
+            O
           </div>
           {open && (
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-white">Eman</p>
+              <p className="truncate text-sm font-medium text-white">Owner</p>
               <p className="flex items-center gap-1.5 text-[11px] text-white/40">
                 <span className="size-1.5 rounded-full bg-emerald-400" /> All systems operational
               </p>
