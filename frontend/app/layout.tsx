@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,15 +18,6 @@ const themeInitScript = `
 })();
 `;
 
-// Initializes the translate.js auto-translate widget after the script loads.
-const translateInitScript = `
-if (window.translate) {
-  translate.service.use('client.edge');
-  translate.listener.start();
-  translate.execute();
-}
-`;
-
 export default function RootLayout({
   children,
 }: {
@@ -35,10 +27,23 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <script src="https://cdn.staticfile.net/translate.js/3.18.66/translate.js" />
-        <script dangerouslySetInnerHTML={{ __html: translateInitScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script
+          src="https://cdn.staticfile.net/translate.js/3.18.66/translate.js"
+          strategy="afterInteractive"
+        />
+        <Script id="translate-init" strategy="afterInteractive">
+          {`
+            if (window.translate) {
+              translate.service.use('client.edge');
+              translate.listener.start();
+              translate.execute();
+            }
+          `}
+        </Script>
+      </body>
     </html>
   );
 }

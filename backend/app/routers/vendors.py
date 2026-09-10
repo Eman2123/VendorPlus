@@ -126,8 +126,9 @@ def update_vendor(vendor_id: UUID, payload: VendorUpdate, db: Session = Depends(
         risk_score=status["risk_score"],
         last_call_status=status["last_call_status"],
         alert_sent=status["alert_sent"],
-        contact_phone=vendor.contact_phone,   # <-- yeh line add karo
+        contact_phone=vendor.contact_phone,   
     )
+
 
 
 @router.delete("/vendors/{vendor_id}", status_code=204)
