@@ -34,6 +34,7 @@ class VendorListItem(BaseModel):
     risk_score: float
     last_call_status: Optional[str] = None
     alert_sent: bool = False
+    contact_phone: Optional[str] = None
 
 class VendorUpdate(BaseModel):
     vendor_name: Optional[str] = None
@@ -41,7 +42,7 @@ class VendorUpdate(BaseModel):
     language_preference: Optional[str] = None
     is_new_or_high_risk: Optional[bool] = None
     deadline: Optional[date] = None
-    
+
 class CallTrigger(BaseModel):
     vendor_id: UUID
     order_id: str
