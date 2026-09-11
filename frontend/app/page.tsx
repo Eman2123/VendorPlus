@@ -45,9 +45,9 @@ const BENEFITS = [
 ];
 
 const PREVIEW_ROWS = [
-  { name: "Acme Textiles", tier: 2, color: "#eab308", confidence: 65 },
-  { name: "Karachi Steel Works", tier: 4, color: "#dc2626", confidence: 25 },
-  { name: "Lahore Packaging Co.", tier: 0, color: "#16a34a", confidence: 92 },
+  { name: "Meridian Textiles", tier: 2, color: "#eab308", confidence: 65 },
+  { name: "Halcyon Steel Works", tier: 4, color: "#dc2626", confidence: 25 },
+  { name: "Vantage Packaging Co.", tier: 0, color: "#16a34a", confidence: 92 },
 ];
 
 const STATS = [
