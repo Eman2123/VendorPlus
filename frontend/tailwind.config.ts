@@ -23,12 +23,14 @@ const config: Config = {
           DEFAULT: "#0d9488",
           dark: "#0f766e",
         },
-        // App-shell (dashboard) palette, inspired by the Spica admin template —
-        // kept separate from the landing page's ink/paper/accent (teal).
-        navy: "#27293d",
+        // App-shell (dashboard) palette — deep navy + teal.
+        // "violet" key name kept as-is so Sidebar/dashboard/etc don't need
+        // per-file edits; it now resolves to teal shades instead of purple.
+        navy: "#1a2138",
         violet: {
-          DEFAULT: "#6640b2",
-          dark: "#5636a0",
+          DEFAULT: "#0d9488",
+          dark: "#0f766e",
+          light: "#2dd4bf",
         },
       },
     },

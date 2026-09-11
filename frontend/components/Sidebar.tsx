@@ -31,14 +31,14 @@ export default function Sidebar() {
       }`}
     >
       <div className="flex items-center justify-between gap-2 px-4 py-5">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="grid size-8 place-items-center rounded-md bg-violet">
             <Radio size={15} />
           </div>
           <span className={`${open ? "block" : "hidden"} text-sm font-semibold tracking-tight`}>
             VendorPulse
           </span>
-        </div>
+        </Link>
         <button
           aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
           onClick={() => setOpen((v) => !v)}

@@ -72,8 +72,7 @@ export default function CallHistoryPage() {
 
       {/* HEADER */}
       <div>
-        <h2 className="font-serif text-2xl font-bold text-ink dark:text-white">Call History & Audit Log</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Track every autonomous call and its risk assessment.</p>
+        
       </div>
 
       {/* ERROR BANNER */}
