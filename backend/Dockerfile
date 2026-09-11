@@ -17,8 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
-
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
