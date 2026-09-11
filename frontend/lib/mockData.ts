@@ -9,7 +9,7 @@ export type Vendor = {
   deadline: string;
   risk_tier: 0 | 1 | 2 | 3 | 4;
   risk_score: number;
-  last_call_status: "no_answer" | "busy" | "voicemail" | "picked_up" | "not_called" | "unreachable" | "failed" | "in_progress" | null;
+  last_call_status: "no_answer" | "busy" | "voicemail" | "picked_up" | "not_called" | "unreachable" | "failed" | "in_progress" | "completed" | null;
   alert_sent: boolean;
   contact_phone?: string;
 };
