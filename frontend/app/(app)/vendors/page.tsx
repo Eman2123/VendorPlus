@@ -352,7 +352,7 @@ export default function VendorListPage() {
                 <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Risk Tier</label>
                 <select
                   value={editingVendor.risk_tier}
-                  onChange={(e) => setEditingVendor({ ...editingVendor, risk_tier: Number(e.target.value) })}
+                  onChange={(e) => setEditingVendor({ ...editingVendor, risk_tier: Number(e.target.value) as Vendor["risk_tier"] })}
                   className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
                 >
                   {TIER_LABELS.map((label, idx) => (
