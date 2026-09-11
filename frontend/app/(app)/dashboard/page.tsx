@@ -276,7 +276,7 @@ export default function DashboardPage() {
               placeholder="Search vendor or ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm text-ink outline-none transition-colors placeholder:text-slate-400 focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500"
+              className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm text-ink outline-none transition-colors placeholder:text-slate-400 focus:border-violet dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500"
             />
           </div>
         </div>
@@ -304,7 +304,7 @@ export default function DashboardPage() {
                 <tr key={v.vendor_id} className="group transition-colors hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                   <td className="px-6 py-4 font-medium text-ink dark:text-white">
                     <div className="flex items-center gap-3">
-                      <div className="grid size-9 place-items-center rounded-lg bg-accent/10 text-accent">
+                      <div className="grid size-9 place-items-center rounded-lg bg-violet/10 text-violet">
                         <Building2 size={15} />
                       </div>
                       {v.vendor_name}
@@ -316,14 +316,14 @@ export default function DashboardPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
-                      v.last_call_status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400' :
+                      v.last_call_status === 'completed' ? 'bg-tier0/10 text-tier0 dark:bg-tier0/10 dark:text-tier0' :
                       v.last_call_status === 'unreachable' ? 'bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-slate-400' :
-                      'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400'
+                      'bg-violet/10 text-violet dark:bg-violet/10 dark:text-violet'
                     }`}>
                       <span className={`size-1.5 rounded-full ${
-                        v.last_call_status === 'completed' ? 'bg-green-500' :
+                        v.last_call_status === 'completed' ? 'bg-tier0' :
                         v.last_call_status === 'unreachable' ? 'bg-slate-400' :
-                        'bg-blue-500'
+                        'bg-violet'
                       }`}/>
                       {v.last_call_status || 'pending'}
                     </span>
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                   type="text"
                   value={editingVendor.vendor_name}
                   onChange={(e) => setEditingVendor({ ...editingVendor, vendor_name: e.target.value })}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-violet dark:border-white/10 dark:bg-white/5 dark:text-white"
                 />
               </div>
               <div>
@@ -390,7 +390,7 @@ export default function DashboardPage() {
                 <select
                   value={editingVendor.risk_tier}
                   onChange={(e) => setEditingVendor({ ...editingVendor, risk_tier: Number(e.target.value) })}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-accent dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink outline-none transition-colors focus:border-violet dark:border-white/10 dark:bg-white/5 dark:text-white"
                 >
                   {TIER_LABELS.map((label, idx) => (
                     <option key={idx} value={idx}>{label} (Tier {idx})</option>
@@ -409,7 +409,7 @@ export default function DashboardPage() {
               <button
                 onClick={handleSaveEdit}
                 disabled={isProcessing}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent/30 transition-all hover:bg-accent-dark disabled:opacity-50"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-violet px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet/30 transition-all hover:bg-violet-dark disabled:opacity-50"
               >
                 {isProcessing ? "Saving..." : <><Save size={16} /> Save Changes</>}
               </button>
