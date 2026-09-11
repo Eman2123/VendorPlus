@@ -23,6 +23,7 @@ import {
 import AddVendorForm from "@/components/AddVendorForm";
 
 const TIER_LABELS = ["Confirmed", "Likely", "At Risk", "High Risk", "Critical"];
+const TIER_COLORS = ["#16a34a", "#84cc16", "#eab308", "#f97316", "#dc2626"];
 const CALL_STATUSES = ["pending", "completed", "unreachable", "failed"];
 
 export default function VendorListPage() {
@@ -214,7 +215,7 @@ export default function VendorListPage() {
                     </td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{v.order_id}</td>
                     <td className="px-6 py-4 text-slate-700 dark:text-slate-300">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium`} style={{ backgroundColor: `${v.risk_color || '#64748b'}20`, color: v.risk_color || '#64748b' }}>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium`} style={{ backgroundColor: `${TIER_COLORS[v.risk_tier] || '#64748b'}20`, color: TIER_COLORS[v.risk_tier] || '#64748b' }}>
                         Tier {v.risk_tier}
                       </span>
                     </td>
