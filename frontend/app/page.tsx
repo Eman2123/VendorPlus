@@ -51,7 +51,7 @@ const PREVIEW_ROWS = [
 ];
 
 const STATS = [
-  { value: "3", label: "Languages", subtext: "English, Urdu, Punjabi" },
+  { value: "2", label: "Languages", subtext: "English, Urdu" },
   { value: "5", label: "Risk Factors", subtext: "Fully transparent" },
   { value: "<3min", label: "Per Call", subtext: "Average duration" },
 ];
