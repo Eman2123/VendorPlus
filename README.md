@@ -73,6 +73,13 @@ VendorPlus/
 
 ## Getting Started
 
+## Live Deployment
+
+- **Frontend:** https://vendor-plus-xi.vercel.app
+- **Backend API:** https://vendorplus.fastapicloud.dev
+- **API Docs (Swagger):** https://vendorplus.fastapicloud.dev/docs
+
+
 ### 1. Clone the repository
 
 ```bash
