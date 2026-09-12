@@ -6,7 +6,8 @@ type CallStatus =
   | "not_called"
   | "unreachable"
   | "failed"
-  | "in_progress";
+  | "in_progress"
+  | "completed";
 
 const STATUS_STYLES: Record<CallStatus, string> = {
   picked_up: "bg-green-50 text-green-700 border-green-300 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/30",
@@ -17,6 +18,7 @@ const STATUS_STYLES: Record<CallStatus, string> = {
   unreachable: "bg-red-50 text-red-700 border-red-300 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30",
   failed: "bg-red-50 text-red-700 border-red-300 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30",
   in_progress: "bg-violet/10 text-violet border-violet/30 animate-pulse",
+  completed: "bg-tier0/10 text-tier0 border-tier0/30 dark:bg-tier0/10 dark:text-tier0 dark:border-tier0/30",
 };
 
 const STATUS_LABELS: Record<CallStatus, string> = {
@@ -28,6 +30,7 @@ const STATUS_LABELS: Record<CallStatus, string> = {
   unreachable: "Unreachable",
   failed: "Call Failed",
   in_progress: "Calling…",
+  completed: "Completed",
 };
 
 export default function CallStatusBadge({ status }: { status: CallStatus }) {
