@@ -13,7 +13,7 @@ const PAGES: Record<string, { title: string; subtitle: string }> = {
 };
 
 // Modern spring-like easing curve
-const ease = [0.22, 1, 0.36, 1];
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Topbar() {
   const pathname = usePathname();
