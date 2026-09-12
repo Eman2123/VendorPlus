@@ -105,7 +105,6 @@ def place_call(vendor_phone: str, vendor_name: str, order_id: str, deadline: str
         time.sleep(POLL_INTERVAL_SECONDS)
 
     if final_status is None:
-        raise RuntimeError
-    (f"CALL-E call {run_id} did not complete within polling window")
+        raise RuntimeError(f"CALL-E call {run_id} did not complete within polling window")
 
     return final_status

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -6,18 +7,42 @@ export const metadata: Metadata = {
   description: "Autonomous voice check-ins for vendor risk detection",
 };
 
+// Applies the saved theme before paint, so there's no light-flash on load.
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem("theme");
+    var isDark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (isDark) document.documentElement.classList.add("dark");
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
-        <header className="border-b bg-white px-6 py-4">
-          <h1 className="text-xl font-semibold">VendorPulse</h1>
-        </header>
-        <main className="p-6">{children}</main>
+        {children}
+        <Script
+          src="https://cdn.staticfile.net/translate.js/3.18.66/translate.js"
+          strategy="afterInteractive"
+        />
+        <Script id="translate-init" strategy="afterInteractive">
+          {`
+            if (window.translate) {
+              translate.service.use('client.edge');
+              translate.listener.start();
+              translate.execute();
+            }
+          `}
+        </Script>
       </body>
     </html>
   );

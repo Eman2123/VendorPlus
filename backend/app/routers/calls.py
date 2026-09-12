@@ -51,6 +51,7 @@ def _run_single_attempt(db: Session, vendor: Vendor, order: Order, attempt_numbe
             deadline=str(order.deadline),
         )
     except Exception as e:
+        print(f"[calle] place_call failed for order {order.order_id}: {e}")
         call_row.call_status = "failed"
         call_row.call_in_progress = False
         db.commit()

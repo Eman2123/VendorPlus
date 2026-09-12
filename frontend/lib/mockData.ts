@@ -9,15 +9,16 @@ export type Vendor = {
   deadline: string;
   risk_tier: 0 | 1 | 2 | 3 | 4;
   risk_score: number;
-  last_call_status: "no_answer" | "busy" | "voicemail" | "picked_up" | null;
+  last_call_status: "no_answer" | "busy" | "voicemail" | "picked_up" | "not_called" | "unreachable" | "failed" | "in_progress" | "completed" | null;
   alert_sent: boolean;
+  contact_phone?: string;
 };
 
 export type CallHistoryItem = {
   call_id: string;
   attempt_number: number;
   call_timestamp: string;
-  call_status: "no_answer" | "busy" | "voicemail" | "picked_up";
+  call_status: "no_answer" | "busy" | "voicemail" | "picked_up" | "not_called" | "unreachable" | "failed" | "in_progress";
   call_duration_seconds: number | null;
   vendor_language_detected: string | null;
   delivery_status: string | null;
