@@ -116,6 +116,18 @@ ALERT_EMAIL_FROM=
 ALERT_EMAIL_APP_PASSWORD=
 ```
 
+
+This project also requires the CALL-E CLI to place real phone calls:
+
+```bash
+npm install -g @call-e/cli
+calle auth login
+```
+
+This opens a one-time browser login. The resulting session token is cached locally and reused automatically. 
+
+
+
 Start FastAPI:
 
 ```bash
