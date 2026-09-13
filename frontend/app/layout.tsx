@@ -37,6 +37,8 @@ export default function RootLayout({
         <Script id="translate-init" strategy="afterInteractive">
           {`
             if (window.translate) {
+              translate.selectLanguageTag.show = true;
+              translate.selectLanguageTag.languages = 'english,chinese_simplified,urdu,arabic,spanish,french';
               translate.service.use('client.edge');
               translate.listener.start();
               translate.execute();
