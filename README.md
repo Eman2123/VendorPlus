@@ -23,6 +23,7 @@ VendorPlus replaces repetitive manual supplier follow-ups with an automated work
 - **Vendor dashboard** — monitor vendor status and overall delivery risk.
 - **Call history** — review previous supplier interactions and extracted results.
 - **Procurement-focused workflow** — designed around proactive supplier monitoring rather than reactive follow-up.
+  
 
 ## Tech Stack
 
